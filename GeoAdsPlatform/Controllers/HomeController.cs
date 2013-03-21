@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Npgsql;
 using System.Configuration;
 using NpgsqlTypes;
+using System.Data;
+using GeoAdsPlatform.Attributes;
 
 namespace GeoAdsPlatform.Controllers
 {
@@ -13,7 +15,7 @@ namespace GeoAdsPlatform.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Message = "Welcome to ASP.NET MVC!";
+            ViewBag.Message = "Welcome to GeoAds!";
 
             return View();
         }
@@ -23,6 +25,49 @@ namespace GeoAdsPlatform.Controllers
             return View();
         }
 
+        public string GetAds(string name, float lat, float lon)
+        {
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+            // DataReader to read database record.
+            NpgsqlDataReader reader = null;
+
+            string pointToGeography = string.Format(@"ST_GeomFromText('POINT({0} {1})', 4326)::geography", lon, lat);
+
+            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"SELECT * FROM test WHERE ST_DWithin( the_geog, {0}, radius)", pointToGeography));
+
+            command.Connection = conn;
+
+            try
+            {
+                conn.Open();
+
+                reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        Console.Write("{0} \t", reader[i]);
+                    }
+                    Console.WriteLine();
+                }
+
+                reader.Close();
+
+            }
+            catch (NpgsqlException e)
+            {
+                throw e;
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return "Great Success";
+        }
+
+        [AllowCrossSiteJson]
         public string SaveAd(string name, float lat, float lon, int radius)
         {
             string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
@@ -59,35 +104,8 @@ namespace GeoAdsPlatform.Controllers
             return "Great Success";
         }
 
-        public string GetLocationBasedAds(float lat, float lon)
-        {
-            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
-            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
-
-            string pointToGeography = string.Format(@"ST_GeomFromText('POINT({0} {1})', 4326)::geography", lon, lat);
-
-            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"SELECT * FROM test WHERE ST_DWithin( the_geog, {0}, radius)", pointToGeography);
-
-            command.Connection = conn;
-
-            try
-            {
-                conn.Open();
-
-                command.ExecuteNonQuery();
-
-            }
-            catch (NpgsqlException e)
-            {
-                throw e;
-            }
-            finally
-            {
-                conn.Close();
-            }
-
-            return "Great Success";
-        }
+        
+        
         
     }
 }
