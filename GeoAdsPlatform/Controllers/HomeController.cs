@@ -51,8 +51,42 @@ namespace GeoAdsPlatform.Controllers
             {
                 throw e;
             }
+            finally
+            {
+                conn.Close();
+            }
 
-            return "Success";
+            return "Great Success";
+        }
+
+        public string GetLocationBasedAds(float lat, float lon)
+        {
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+
+            string pointToGeography = string.Format(@"ST_GeomFromText('POINT({0} {1})', 4326)::geography", lon, lat);
+
+            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"SELECT * FROM test WHERE ST_DWithin( the_geog, {0}, radius)", pointToGeography);
+
+            command.Connection = conn;
+
+            try
+            {
+                conn.Open();
+
+                command.ExecuteNonQuery();
+
+            }
+            catch (NpgsqlException e)
+            {
+                throw e;
+            }
+            finally
+            {
+                conn.Close();
+            }
+
+            return "Great Success";
         }
         
     }
