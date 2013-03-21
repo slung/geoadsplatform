@@ -27,6 +27,12 @@ namespace GeoAdsPlatform
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
+            routes.MapRoute(
+                "SaveAd", // Route name
+                "{name}/{lat}/{lon}/{radius}", // URL with parameters
+                new { controller = "Home", action = "SaveAd", id = UrlParameter.Optional } // Parameter defaults
+            );
+
         }
 
         protected void Application_Start()
