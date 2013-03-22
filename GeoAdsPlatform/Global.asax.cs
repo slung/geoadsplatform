@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using GeoAdsPlatform.Binders;
+using GeoAdsPlatform.Models;
 
 namespace GeoAdsPlatform
 {
@@ -22,9 +24,9 @@ namespace GeoAdsPlatform
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+                "Register", // Route name
+                "register", // URL with parameters
+                new { controller = "Account", action = "Register" } // Parameter defaults
             );
 
             routes.MapRoute(
@@ -47,6 +49,8 @@ namespace GeoAdsPlatform
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+
+            ModelBinders.Binders.Add(typeof(Credentials), new CredentialsModelBinder());
         }
     }
 }
