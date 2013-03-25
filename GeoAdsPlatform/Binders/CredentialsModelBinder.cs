@@ -20,7 +20,7 @@ namespace GeoAdsPlatform.Binders
             var queryParams = HttpUtility.ParseQueryString(s);
 
             Credentials c = new Credentials();
-            c.Email = queryParams["username"];
+            c.Email = queryParams["email"];
             c.Password = queryParams["password"];
 
             return c;

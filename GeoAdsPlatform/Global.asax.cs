@@ -30,6 +30,12 @@ namespace GeoAdsPlatform
             );
 
             routes.MapRoute(
+                "Login", // Route name
+                "login", // URL with parameters
+                new { controller = "Account", action = "Login" } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "GetAds", // Route name
                 "getads/{name}/{lat}/{lon}", // URL with parameters
                 new { controller = "Home", action = "GetAds", name = UrlParameter.Optional } // Parameter defaults
