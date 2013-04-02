@@ -15,8 +15,14 @@ namespace GeoAdsPlatform.Controllers
 {
     public class HomeController : Controller
     {
+        [AllowCrossSiteJson]
         public ActionResult Index()
         {
+            User user = Session["user"] as User;
+
+            if ( user!=null )
+                ViewBag.ServerScript = "GA.client = " + user.Email;
+
             return View();
         }
 

@@ -40,7 +40,7 @@ namespace GeoAdsPlatform.Controllers
                 this.CreateAuthenticationTicket(credentials);
                 User user = Session["user"] as User;
 
-                return RedirectToAction("Index", "Home");
+                return Redirect(Url.Action("Index", "Home"));//RedirectToRoute(new { controller="home" });
             }
             else
             {
@@ -55,10 +55,6 @@ namespace GeoAdsPlatform.Controllers
         [AllowCrossSiteJson]
         public ActionResult Register()
         {
-            // Output
-            Response.ContentType = "application/json";
-            Response.StatusCode = (int)HttpStatusCode.OK;
-
             return View();
         }
 
@@ -73,7 +69,7 @@ namespace GeoAdsPlatform.Controllers
 
             if (this.RegisterUser(credentials))
             {
-                return new WebResult(new ResultInfo() { GreatSuccess = true });
+                return RedirectToAction("Login");
             }
             else
             {

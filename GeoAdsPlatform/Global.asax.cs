@@ -24,12 +24,6 @@ namespace GeoAdsPlatform
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "Default",                                              // Route name
-                "",                                                      // URL with parameters
-                new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
-            );
-
-            routes.MapRoute(
                 "Home",                                              // Route name
                 "home",                                             // URL with parameters
                 new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
@@ -63,6 +57,12 @@ namespace GeoAdsPlatform
                 "SaveAd", // Route name
                 "ads/save", // URL with parameters
                 new { controller = "Ads", action = "Save" } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "Default",                                              // Route name
+                "",                                                      // URL with parameters
+                new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
             );
 
         }

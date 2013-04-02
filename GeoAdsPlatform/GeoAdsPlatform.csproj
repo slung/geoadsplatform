@@ -243,6 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Ads\Index.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
     <None Include="Web\fonts\Flat-UI-Icons-16.eot" />
     <None Include="Web\fonts\Flat-UI-Icons-16.ttf" />
     <None Include="Web\fonts\Flat-UI-Icons-16.woff" />
