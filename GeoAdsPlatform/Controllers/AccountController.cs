@@ -9,19 +9,50 @@ using Npgsql;
 using System.Configuration;
 using NpgsqlTypes;
 using System.Data;
+using System.Web.Security;
+using GeoAdsPlatform.Results;
+using GeoAdsPlatform.Attributes;
+using System.Runtime.Serialization.Json;
 
 namespace GeoAdsPlatform.Controllers
 {
     public class AccountController : Controller
     {
-        //
-        // GET: /Account/
-        public ActionResult Index()
-        {
+        #region LOGIN
 
+        [AllowCrossSiteJson]
+        public ActionResult Login()
+        {
             return View();
         }
 
+        [AllowCrossSiteJson]
+        [HttpPost]
+        [ActionName("Login")]
+        public ActionResult LoginPost(Credentials credentials)
+        {
+            // Output
+            Response.ContentType = "application/json";
+            Response.StatusCode = (int)HttpStatusCode.OK;
+
+            if (this.LoginUser(credentials))
+            {
+                this.CreateAuthenticationTicket(credentials);
+                User user = Session["user"] as User;
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return new WebResult(new ResultInfo() { GreatSuccess = false });
+            }
+        }
+
+        #endregion
+
+        #region REGISTER
+
+        [AllowCrossSiteJson]
         public ActionResult Register()
         {
             // Output
@@ -31,33 +62,26 @@ namespace GeoAdsPlatform.Controllers
             return View();
         }
 
+        [AllowCrossSiteJson]
         [HttpPost]
-        [ActionName("Login")]
-        public string LoginPost(Credentials credentials)
+        [ActionName("Register")]
+        public ActionResult RegisterPost(Credentials credentials)
         {
-            if (this.LoginUser(credentials))
+            // Output
+            Response.ContentType = "application/json";
+            Response.StatusCode = (int)HttpStatusCode.OK;
+
+            if (this.RegisterUser(credentials))
             {
-                return "Login - Great Success!";
+                return new WebResult(new ResultInfo() { GreatSuccess = true });
             }
             else
             {
-                return "Login - Fail!";
+                return new WebResult(new ResultInfo() { GreatSuccess = false });
             }
         }
 
-        [HttpPost]
-        [ActionName("Register")]
-        public string RegisterPost( Credentials credentials )
-        {
-            if (this.RegisterUser(credentials))
-            {
-                return "Register - Great Success!";
-            }
-            else
-            {
-                return "Register - Fail!";
-            }
-        }
+        #endregion
 
         #region HELPERS
 
@@ -84,8 +108,7 @@ namespace GeoAdsPlatform.Controllers
             }
             catch (NpgsqlException e)
             {
-
-                throw e;
+                return false;
             }
             finally
             {
@@ -116,13 +139,32 @@ namespace GeoAdsPlatform.Controllers
             }
             catch (NpgsqlException e)
             {
-                
-                throw e;
+                return false;
             }
             finally
             {
                 conn.Close();
             }
+        }
+
+        private void CreateAuthenticationTicket( Credentials credentials )
+        {
+            Session["user"] = new User() { Email = credentials.Email, Password = credentials.Password };
+
+            FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1,
+                credentials.Email,
+                DateTime.Now,
+                DateTime.Now.AddYears(1),
+                true,
+                credentials.Email + " " + credentials.Password,
+                FormsAuthentication.FormsCookiePath);
+
+            // Encrypt the ticket.
+            string encTicket = FormsAuthentication.Encrypt(ticket);
+
+            // Create the cookie.
+            Response.Cookies[FormsAuthentication.FormsCookieName].Value = encTicket.ToString();
+            Response.Cookies[FormsAuthentication.FormsCookieName].Expires = DateTime.Now.AddYears(1);
         }
         #endregion
 

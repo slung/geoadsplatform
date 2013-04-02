@@ -1,8 +1,208 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>GeoAds - the power of Where</title>
 
-<h2>@ViewBag.Message</h2>
-<p>
-    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-</p>
+		<!-- Icon -->
+		<link rel="icon" href="/Web/images/favicon.ico" />
+		<!-- Style -->
+		<link rel="stylesheet" type="text/css" href="/Web/style/main.css"/>
+	    <link rel="stylesheet" type="text/css" href="/Web/style/grids-min.css"/>
+	    <link rel="stylesheet" type="text/css" href="/Web/style/cssreset-min.css"/>
+	    <link rel="stylesheet" type="text/css" href="/Web/style/bootstrap.css"/>
+	    <link rel="stylesheet" type="text/css" href="/Web/style/flat-ui.css"/>
+	    
+	    <!-- Google Maps -->
+    	<script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.3&sensor=false&language=en"></script>
+	    
+	    
+	    <script type="text/javascript" src="/Web/libs/jquery-1.7.2.min.js"></script>
+	    <script type="text/javascript" src="/Web/libs/js.class.js"></script>
+		<script type="text/javascript" src="/Web/libs/geoads.jquery.js"></script>
+		<script type="text/javascript" src="/Web/libs/geoads.js"></script>
+		<script type="text/javascript" src="/Web/libs/mustache.js"></script>
+		<script type="text/javascript" src="/Web/libs/jsonp.js"></script>
+		
+		<script type="text/javascript" src="/Web/libs/geoads.helpers.js"></script>
+	    
+		<!-- Font -->
+	    <link href='http://fonts.googleapis.com/css?family=Alfa+Slab+One' rel='stylesheet' type='text/css'>
+		
+		<!-- Script -->
+		<script>
+
+		    (function ($j) {
+		        $j(document).ready(function () {
+
+		            /** App **/
+		            var app = new GA.App({
+		                state: GA.App.States.HOME,
+		                views: [
+		                /*
+		                * Home View
+		                */
+							new GA.HomeView({
+							    container: GA.one("#home"),
+							    templates: {
+							        main: $j.trim(GA.one("#home-tpl").innerHTML)
+							    }
+							}),
+		                /*
+		                * Menu View
+		                */
+							new GA.MenuView({
+							    container: GA.one("#menu"),
+							    templates: {
+							        main: $j.trim(GA.one("#menu-tpl").innerHTML)
+							    }
+							}),
+		                /*
+		                * Search View
+		                */
+							new GA.SearchView({
+							    container: GA.one("#search"),
+							    hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
+							    templates: {
+							        main: $j.trim(GA.one("#search-tpl").innerHTML)
+							    }
+							}),
+		                /*
+		                * Map View
+		                */
+							new GA.MapView({
+							    container: GA.one("#map"),
+							    renderContainer: GA.one("#map-container"),
+							    hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
+							    zoom: 3,
+							    markerInfo: {
+							        url: "images/grey-blue-pin-48.png",
+							        position: {
+							            lat: 29.312607001603343,
+							            lng: -40.166015625
+							        }
+							    },
+							    templates: {
+							    }
+							}),
+		                /*
+		                * Info View
+		                */
+							new GA.InfoView({
+							    container: GA.one("#info"),
+							    hideOnStates: [GA.App.States.HOME, GA.App.States.MAP, GA.App.States.LOGIN, GA.App.States.REGISTER],
+							    templates: {
+							        main: $j.trim(GA.one("#info-tpl").innerHTML)
+							    }
+							})
+						]
+		            });
+
+		            app.start();
+
+		            //GeolocateUser
+		            GA.DataManager.getInstance().geolocateUser();
+		        });
+
+		    })(jQuery.noConflict());
+			
+		</script>	
+		
+	</head>
+	<body>
+		
+		<div class="page">
+			<div id="menu"></div>
+			<div id="home"></div>
+			<div id="steps"></div>
+			<div id="search"></div>
+			<div id="login"></div>
+			<div id="register"></div>
+			<div id="map">
+				<div id="next-step" class="yui3-u" title="Next Step"></div>
+				<div id="map-container"></div>
+			</div>
+			<div id="info"></div>
+		</div>
+		
+		<!-- Templates -->
+		
+		<!-- Home View -->
+		<script id="home-tpl" type="text/template">
+			
+		</script>
+		
+		<!-- Menu View -->
+		<script id="menu-tpl" type="text/template">
+			<div class="menu-container">
+				<div id="home-item" class="yui3-u logo menu-item">GeoAds</div>
+				<div id="login-item" class="yui3-u menu-item">Sign in</div>
+				<div id="register-item" class="yui3-u menu-item">Sign up</div>
+				<div id="publish-item" class="yui3-u menu-item">Publish</div>
+				<div id="about-item" class="yui3-u menu-item">About</div>
+			</div>
+		</script>
+		
+		<!-- Search View -->
+		<script id="search-tpl" type="text/template">
+			<div id="search-btn" class="yui3-u" title="Search for my location"></div>
+			<input id="search-input" class="yui3-u" type="text" placeholder="Where are you?"/>
+		</script>
+		
+		<!-- Info View -->
+		<script id="info-tpl" type="text/template">
+			<div id="previous-step" class="yui3-u" title="Previous Step"></div>
+			<div class="left">
+				<h3>Congrats!</h3>
+				<p>You're almost done adding you business ON THE MAP!</p>
+				<p>Please take on more minute and complete your business information. This is the information the users will see when they're in the neighbourhood.</p>
+			</div>
+			<div class="right">
+				<input id="company-name" type="text" maxlength="25" placeholder="Company name (visible to users)"/>
+				<input id="keywords" type="text" maxlength="25" placeholder="Add keywords describing your company (visible to users)"/>
+				<a id="publish" href="#" class="btn btn-large btn-block btn-info">Put me on the map</a>
+			</div>
+		</script>
+		
+		<!-- Account View -->
+		<script id="login-tpl" type="text/template">
+	          <div class="login-form">
+	          	<img id="closeBtn" src="images/close.png"/>
+	            <div class="control-group">
+	              <input type="text" class="login-field" value="" placeholder="Enter your email" id="login-email">
+	              <label class="login-field-icon fui-man-16" for="login-name"></label>
+	            </div>
+	
+	            <div class="control-group">
+	              <input type="password" class="login-field" value="" placeholder="Password" id="login-pass">
+	              <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+	            </div>
+	
+	            <a id="loginBtn" class="btn btn-primary btn-large btn-block" href="#">Sign in</a>
+	            <a id="lostBtn" class="login-link" href="#">Lost your password?</a>
+	          </div>
+		</script>
+		
+		<script id="register-tpl" type="text/template">
+	          <div class="login-form">
+	          	<img id="closeBtn" src="images/close.png"/>
+	            <div class="control-group">
+	              <input type="text" class="login-field" value="" placeholder="Enter your email" id="login-name">
+	              <label class="login-field-icon fui-man-16" for="login-name"></label>
+	            </div>
+	
+	            <div class="control-group">
+	              <input id="register-pass" type="password" class="login-field" value="" placeholder="Password">
+	              <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+	            </div>
+	            
+	            <div class="control-group">
+	              <input id="register-pass-confirm" type="password" class="login-field" value="" placeholder="Confirm Password">
+	              <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+	            </div>
+	
+	            <a id="registerBtn" class="btn btn-primary btn-large btn-block" href="#">Sign up</a>
+	          </div>
+		</script>
+		
+	</body>
+</html>

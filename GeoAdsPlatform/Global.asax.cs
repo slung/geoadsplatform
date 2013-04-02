@@ -24,9 +24,15 @@ namespace GeoAdsPlatform
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "Register", // Route name
-                "register", // URL with parameters
-                new { controller = "Account", action = "Register" } // Parameter defaults
+                "Default",                                              // Route name
+                "",                                                      // URL with parameters
+                new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "Home",                                              // Route name
+                "home",                                             // URL with parameters
+                new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
             );
 
             routes.MapRoute(
@@ -36,15 +42,27 @@ namespace GeoAdsPlatform
             );
 
             routes.MapRoute(
-                "GetAds", // Route name
-                "getads/{name}/{lat}/{lon}", // URL with parameters
-                new { controller = "Home", action = "GetAds", name = UrlParameter.Optional } // Parameter defaults
+                "Register", // Route name
+                "register", // URL with parameters
+                new { controller = "Account", action = "Register" } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "GetLocationBasedAds", // Route name
+                "getads.{format}", // URL with parameters
+                new { controller = "Api", action = "GetAds", name = UrlParameter.Optional } // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "Ads", // Route name
+                "ads", // URL with parameters
+                new { controller = "Ads", action = "Index" } // Parameter defaults
             );
 
             routes.MapRoute(
                 "SaveAd", // Route name
-                "savead/{name}/{lat}/{lon}/{radius}", // URL with parameters
-                new { controller = "Home", action = "SaveAd" } // Parameter defaults
+                "ads/save", // URL with parameters
+                new { controller = "Ads", action = "Save" } // Parameter defaults
             );
 
         }
@@ -56,7 +74,10 @@ namespace GeoAdsPlatform
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
 
+            //Add binders
             ModelBinders.Binders.Add(typeof(Credentials), new CredentialsModelBinder());
+            ModelBinders.Binders.Add(typeof(AdRequest), new AdRequestModelBinder());
+            ModelBinders.Binders.Add(typeof(AdInfo), new AdModelBinder());
         }
     }
 }
