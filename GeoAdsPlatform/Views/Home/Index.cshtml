@@ -70,9 +70,6 @@
             });
 
             app.start();
-
-            //GeolocateUser
-            GA.DataManager.getInstance().geolocateUser();
         });
 
     })(jQuery.noConflict());
@@ -86,7 +83,9 @@
 		
 <!-- Home View -->
 <script id="home-tpl" type="text/template">
-			
+	<div id="welcome">Welcome to GeoAds Cloud Service</div>
+	<div class="story">Do you have a business? Put in on the map so the client can see it!</div>
+	<div class="story">In business, like in realestate: location, location, location! :)</div>
 </script>
 		
 <!-- Menu View -->
@@ -100,6 +99,7 @@
             <div id="new-ad-item" class="yui3-u menu-item">New Ad</div>
 			<div id="my-ads-item" class="yui3-u menu-item">My Ads</div>
 			<div id="about-item" class="yui3-u menu-item">About</div>
+            <div id="logout-item" class="yui3-u menu-item">Sign Out</div>
 		{{/client}}
 		{{^client}}
 			<div id="home-item" class="yui3-u logo menu-item">GeoAds</div>

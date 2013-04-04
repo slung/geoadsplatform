@@ -42,6 +42,12 @@ namespace GeoAdsPlatform
             );
 
             routes.MapRoute(
+                "Logout", // Route name
+                "logout", // URL with parameters
+                new { controller = "Login", action = "Logout" } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "Register", // Route name
                 "register", // URL with parameters
                 new { controller = "Register", action = "Index" } // Parameter defaults

@@ -9,6 +9,16 @@
 		    var app = new GA.App({
 		        state: GA.App.States.MAP,
 		        views: [
+                /*
+                * Home View
+                */
+				new GA.HomeView({
+					container: GA.one("#home"),
+                    hideOnStates: [GA.App.States.INFO, GA.App.States.MAP, GA.App.States.NO_ADS],
+					templates: {
+						main: $j.trim(GA.one("#home-tpl").innerHTML)
+					}
+				}),
 		        /*
 		        * Menu View
 		        */
@@ -74,7 +84,13 @@
 @section PAGE_TEMPLATES
 {
 <!-- Templates -->
-		
+
+<script id="home-tpl" type="text/template">
+	<div id="welcome">Welcome to GeoAds Cloud Service</div>
+	<div class="story">Do you have a business? Put in on the map so the client can see it!</div>
+	<div class="story">In business, like in realestate: location, location, location! :)</div>
+</script>
+
 <!-- Menu View -->
 <script id="menu-tpl" type="text/template">
 	<div class="menu-container">
@@ -85,6 +101,7 @@
 			</div>
             <div id="my-ads-item" class="yui3-u menu-item">My Ads</div>
             <div id="about-item" class="yui3-u menu-item">About</div>
+            <div id="logout-item" class="yui3-u menu-item">Sign Out</div>
 		{{/client}}
 	</div>
 </script>
@@ -114,6 +131,7 @@
 @*Body*@
 <div class="page">
 	<div id="menu"></div>
+    <div id="home"></div>
 	<div id="search"></div>
 	<div id="map">
 		<div id="next-step" class="yui3-u" title="Next Step"></div>

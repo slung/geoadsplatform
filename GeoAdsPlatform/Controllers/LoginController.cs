@@ -50,6 +50,19 @@ namespace GeoAdsPlatform.Controllers
 
         #endregion
 
+        #region LOGOUT
+
+        public ActionResult Logout()
+        {
+            Session[SessionVars.User] = null;
+
+            FormsAuthentication.SignOut();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        #endregion
+
         #region HELPERS
 
         private bool LoginUser(Credentials credentials)

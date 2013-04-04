@@ -334,6 +334,7 @@
 		    });
 		},
 		
+
 		getAds: function( success, error )
 		{
 			var url = this.geoAdsPlatformUrl + "ads";
@@ -352,7 +353,7 @@
 		    	}, this)
 		    });
 		},
-		
+
 		saveAd: function( name, description, radius, lat, lon, success, error )
 		{
 			if ( !name || !description || !radius || !lat || !lon && error)
@@ -464,7 +465,7 @@
 				return;
 				
 			this.ajax.saveAd( this.ad.name, this.ad.description, this.ad.radius, this.ad.center.lat, this.ad.center.lon, function(){
-				window.location.href = "ads";
+				window.location.href = "/ads";
 			}, function(){
 				window.location.href = "home";
 			} );
@@ -589,6 +590,9 @@
 		map: null,
 		maxRadius: 2000,
 		zoom: PUBLISH_ZOOM,
+		alwaysRefreshMarker: false,
+		defaultRadius: 100,
+		editableElements: true,
 		
 		events: {
 			"#next-step":{
@@ -603,21 +607,25 @@
 			
 			this.dataManager.on('userGeocoded', GA.bind( this.onUserGeocoded, this));
 			this.dataManager.on('userNotGeocoded', GA.bind( this.onUserNotGeocoded, this));
+			this.markerIconUrl = cfg.markerIconUrl || "images/grey-blue-pin-48.png";
+			
 			
 			this.markerInfo = cfg.markerInfo || {
-				url: "images/orange-pin.png",
+				url: this.markerIconUrl,
+				radius: this.defaultRadius,
 				position: { 
 					lat: 15,
 					lng: 0
 				}
 			};
 			
-			this.radius = cfg.radius || 100;
-			
-			if ( this.radius > this.maxRadius )
-				this.radius = this.maxRadius;
+			if ( this.markerInfo.radius > this.maxRadius )
+				this.markerInfo.radius = this.maxRadius;
 			
 			this.startZoom = cfg.startZoom || 3;
+			
+			if ( cfg.editableElements == true || cfg.editableElements == false)
+				this.editableElements = cfg.editableElements;	
 		},
 		
 		register: function()
@@ -648,6 +656,14 @@
 			
 			this.map = new google.maps.Map( this.renderContainer, mapOptions );
 			
+			//Add MapReady listener
+			var listener = google.maps.event.addListener( this.map, 'tilesloaded', GA.bind( function( evt ) {
+				
+				this.sendMessage("mapReady");
+				
+				google.maps.event.removeListener(listener);
+			}, this ));
+			
 			return this;
 		},
 		
@@ -672,7 +688,7 @@
 			if ( !this.markerInfo )
 				return;
 			
-			if ( !this.marker )
+			if ( !this.marker || this.alwaysRefreshMarker)
 			{
 				this.createMarker( this.markerInfo );
 			}
@@ -708,7 +724,7 @@
 			this.marker = new google.maps.Marker({
 				map: this.map,
 				animation: google.maps.Animation.DROP,
-				draggable: true,
+				draggable: this.editableElements,
 				icon: markerInfo.url,
 				position: new google.maps.LatLng( markerInfo.position.lat, markerInfo.position.lng )
 			});
@@ -721,9 +737,9 @@
 			if ( !this.adCoverage )
 			{
 				this.adCoverage = new google.maps.Circle({
-					editable: true,
+					editable: this.editableElements,
 					center: center,
-					radius: this.radius,
+					radius: this.markerInfo.radius,
 					strokeColor: "#008CE4",
 				    strokeOpacity: 0.5,
 				    strokeWeight: 1,
@@ -769,6 +785,7 @@
 			markerInfo.position = {};
 			markerInfo.position.lat = msg.lat;
 			markerInfo.position.lng = msg.lon;
+			markerInfo.radius = msg.radius || this.defaultRadius;
 			
 			this.drawMarker( markerInfo );
 		},
@@ -866,6 +883,7 @@
 		render: function()
 		{
 			this.container.innerHTML = this.mustache( this.templates.main, {
+
 				client: this.client
 			});
 			
@@ -909,7 +927,7 @@
 			{
 				case "home-item":
 				{
-					window.location.href = "home";
+					window.location.href = "/home";
 					this.sendMessage("changeState", {
 						state: GA.App.States.HOME
 					});
@@ -919,7 +937,7 @@
 				
 				case "login-item":
 				{
-					window.location.href = "login";
+					window.location.href = "/login";
 					this.sendMessage("changeState", {
 						state: GA.App.States.LOGIN
 					});
@@ -927,9 +945,16 @@
 					break;
 				}
 				
+				case "logout-item":
+				{
+					window.location.href = "/logout";
+					
+					break;
+				}
+				
 				case "register-item":
 				{
-					window.location.href = "register";
+					window.location.href = "/register";
 					this.sendMessage("changeState", {
 						state: GA.App.States.REGISTER
 					});
@@ -946,7 +971,7 @@
 				
 				case "new-ad-item":
 				{
-					window.location.href = "ads/create";
+					window.location.href = "/ads/create";
 					
 					break;
 				}
@@ -1251,7 +1276,8 @@
 				
 				GA.addClass( GA.one( EMAIL_INPUT_SELECTOR, this.container ), INPUT_ERROR_CLASS );
 				GA.addClass( GA.one( PASSWORD_INPUT_SELECTOR, this.container ), INPUT_ERROR_CLASS );
-			}, this) );
+			}, this) ); 
+
 		},
 		
 		onHomeClick: function( evt )
@@ -1434,7 +1460,9 @@
 	var AdsView = GA.View.extend({
 		
 		events: {
-			
+			".ad":{
+				click: "onAdClick"
+			}
 		},
 		
 		init: function( cfg ) {
@@ -1456,25 +1484,93 @@
 		
 		register: function()
 		{
+			this.onMessage("selectAd", this.onSelectAd);
+			this.onMessage("mapReady", this.onMapReady);
 		},
 		
 		render: function()
 		{
 			if ( !this.ads || this.ads.length == 0)
-				return;
+			{
 				
+				//Change container size
+				jQuery("#" + this.container.id).css("width", "100%");
+				
+				this.sendMessage("changeState", { state: GA.App.States.NO_ADS });
+				
+				this.container.innerHTML = this.mustache( this.templates.noAds, {});
+				
+				return this;
+			}
+			
+			this.sendMessage("changeState", { state: GA.App.States.MAP });
+			
 			this.container.innerHTML = this.mustache( this.templates.main, {
 				ads: this.ads
 			});
 			
 			return this;
-		}
+		},
 		
+		selectAd: function( adSelector, adIndex )
+		{
+			if ( !this.ads || this.ads.length == 0 )
+				return;
+			
+			this.drawAd( adIndex );
+			
+			//First remove selected class
+			GA.removeClass(GA.one(".selected", this.container), "selected");
+			
+			//Then add selected class to specified element
+			GA.addClass(GA.one(adSelector, this.container), "selected");
+		},
+		
+		drawAd: function( adIndex )
+		{
+			if ( adIndex == undefined )
+				return;
+			
+			var adInfo = {
+				lat: this.ads[adIndex].Lat,
+				lon: this.ads[adIndex].Lon,
+				radius: this.ads[adIndex].Radius
+			};
+			
+			this.sendMessage("drawMarker", adInfo);
+		},
+		
+		/*
+		 * Messages
+		 */
+		
+		onSelectAd: function( msg )
+		{
+			if ( !msg )
+				return;
+			
+			var adSelector = "#ad-" + msg.adIndex
+			
+			this.selectAd( adSelector, msg.adIndex );
+		},
+		
+		onMapReady: function( msg )
+		{
+			//Select first ad on map ready
+			this.selectAd( "#ad-0", 0 );
+		},
 		
 		/*
 		 * Events
 		 */
-		
+		onAdClick: function( evt )
+		{
+			var adId = evt.currentTarget.id;
+			var adSelector = "#" + adId;
+			var adIndex = adId.split('-')[1];
+			
+			this.selectAd( adSelector, adIndex );
+		}
 	});
 	
 	// Publish
@@ -1620,6 +1716,7 @@
 	GA.App.States.INFO = 'info';
 	GA.App.States.LOGIN = 'login';
 	GA.App.States.REGISTER = 'register';
+	GA.App.States.NO_ADS = 'noads';
 	
 }(GA));
 

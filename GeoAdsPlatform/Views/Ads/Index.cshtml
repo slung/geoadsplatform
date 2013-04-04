@@ -10,6 +10,16 @@
                 state: GA.App.States.MAP,
                 views: [
                 /*
+                * Home View
+                */
+				new GA.HomeView({
+					container: GA.one("#home"),
+                    hideOnStates: [GA.App.States.INFO, GA.App.States.MAP, GA.App.States.NO_ADS],
+					templates: {
+						main: $j.trim(GA.one("#home-tpl").innerHTML)
+					}
+				}),
+                /*
                 * Menu View
                 */
 				new GA.MenuView({
@@ -25,16 +35,28 @@
 				new GA.AdsView({
 					container: GA.one("#ads"),
 					templates: {
-						main: $j.trim(GA.one("#ads-tpl").innerHTML)
+						main: $j.trim(GA.one("#ads-tpl").innerHTML),
+						noAds: $j.trim(GA.one("#no-ads-tpl").innerHTML)
 					}
-				})
+				}),
+                /*
+                * Map View
+                */
+				new GA.MapView({
+					container: GA.one("#map"),
+					renderContainer: GA.one("#map"),
+					hideOnStates: [GA.App.States.HOME, GA.App.States.NO_ADS],
+					zoom: 3,
+					alwaysRefreshMarker: true,
+					editableElements: false,
+                    markerIconUrl: "/Web/images/grey-blue-pin-48.png",
+					templates: {
+					}
+				}),
 			]
             });
 
             app.start();
-
-            //GeolocateUser
-            GA.DataManager.getInstance().geolocateUser();
         });
 
     })(jQuery.noConflict());
@@ -44,6 +66,13 @@
 
 @section PAGE_TEMPLATES
 {
+
+<script id="home-tpl" type="text/template">
+	<div id="welcome">Welcome to GeoAds Cloud Service</div>
+	<div class="story">Do you have a business? Put in on the map so the client can see it!</div>
+	<div class="story">In business, like in realestate: location, location, location! :)</div>
+</script>
+
 <!-- Menu View -->
 <script id="menu-tpl" type="text/template">
 	<div class="menu-container">
@@ -54,29 +83,39 @@
 			</div>
             <div id="new-ad-item" class="yui3-u menu-item">New Ad</div>
             <div id="about-item" class="yui3-u menu-item">About</div>
+            <div id="logout-item" class="yui3-u menu-item">Sign Out</div>
 		{{/client}}
 	</div>
 </script>
 		
 <!-- Ads View -->
 <script id="ads-tpl" type="text/template">
-	{{#ads}}
-		<div id="ad-{{index}}" class="ad">
-			<div id="ad-info">
-				<div id="name">{{Name}}</div>
-				<div id="description">{{Description}}</div>
+	<div id="ads-container">
+		{{#ads}}
+			<div id="ad-{{index}}" class="ad">
+				<div id="ad-info">
+					<div id="name">{{Name}}</div>
+					<div id="description">{{Description}}</div>
+				</div>
+				<div id="buttons">
+					<a id="editBtn-1" class="yui3-u btn btn-primary" href="#">Edit</a>
+					<a id="deleteBtn-1" class="yui3-u btn btn-primary delete" href="#">Delete</a>
+				</div>
 			</div>
-			<div id="buttons">
-				<a id="editBtn-1" class="yui3-u btn btn-primary" href="#">Edit</a>
-				<a id="deleteBtn-1" class="yui3-u btn btn-primary delete" href="#">Delete</a>
-			</div>
-		</div>
-	{{/ads}}
+		{{/ads}}
+	</div>
+</script>
+		
+<script id="no-ads-tpl" type="text/template">
+	<div class="msg">Oh no....it appears that you haven't created any Ads!</div>
+	<div class="msg">You can start by <a href="ads/create">creating a new Ad.</a></div>
 </script>
 }
 
 @*Body*@
-<div class="page">
+<div class="ads-page">
 	<div id="menu"></div>
+    <div id="home"></div>
 	<div id="ads"></div>
+	<div id="map"></div>
 </div>
