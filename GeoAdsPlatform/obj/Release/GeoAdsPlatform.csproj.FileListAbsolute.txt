@@ -1,0 +1,10 @@
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\GeoAdsPlatform.dll
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\GeoAdsPlatform.pdb
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\EntityFramework.dll
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\Mono.Security.dll
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\Newtonsoft.Json.dll
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\Npgsql.dll
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\bin\EntityFramework.xml
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\obj\Release\ResolveAssemblyReference.cache
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\obj\Release\GeoAdsPlatform.dll
+D:\Projects\GeoAdsPlatform\GeoAdsPlatform\obj\Release\GeoAdsPlatform.pdb

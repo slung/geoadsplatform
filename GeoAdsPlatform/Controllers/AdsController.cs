@@ -9,28 +9,45 @@ using System.Configuration;
 using GeoAdsPlatform.Models;
 using NpgsqlTypes;
 using GeoAdsPlatform.Results;
+using GeoAdsPlatform.Filters;
+using System.Runtime.Serialization.Json;
 
 namespace GeoAdsPlatform.Controllers
 {
+    [GeoAdsAuthorize]
     public class AdsController : Controller
     {
-        public ActionResult Index()
+        
+        #region CREATE
+
+        public ActionResult Create()
         {
+            User user = Session[SessionVars.User] as User;
+
+            if (user != null)
+                ViewBag.ServerScript = "'" + user.Email + "'";
+            else
+                ViewBag.ServerScript = "null";
+
             return View();
         }
 
         [AllowCrossSiteJson]
         [HttpPost]
-        public ActionResult Save(AdInfo adInfo)
+        [ActionName("Create")]
+        public ActionResult CreatePost(AdInfo adInfo)
         {
+            User user = Session[SessionVars.User] as User;
+
             string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
             NpgsqlConnection conn = new NpgsqlConnection(connectionString);
-
+            
             string pointToGeography = string.Format(@"ST_GeomFromText('POINT({0} {1})', 4326)", adInfo.Lon, adInfo.Lat);
 
-            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"INSERT INTO ads (name, description, radius, longitude, latitude, the_geog )
-            VALUES ( @name, @description, @radius, @longitude, @latitude, {0} )", pointToGeography));
+            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"INSERT INTO ads (client, name, description, radius, longitude, latitude, the_geog )
+            VALUES ( @client, @name, @description, @radius, @longitude, @latitude, {0} )", pointToGeography));
 
+            command.Parameters.Add("@client", NpgsqlDbType.Integer).Value = user.InternalId;
             command.Parameters.Add("@name", NpgsqlDbType.Varchar, 100).Value = adInfo.Name;
             command.Parameters.Add("@description", NpgsqlDbType.Varchar, 100).Value = adInfo.Description;
             command.Parameters.Add("@radius", NpgsqlDbType.Integer).Value = adInfo.Radius;
@@ -57,5 +74,84 @@ namespace GeoAdsPlatform.Controllers
             }
         }
 
+        #endregion
+
+        #region READ
+
+        public ActionResult Index()
+        {
+            User user = Session[SessionVars.User] as User;
+
+            //Save user Email in ViewBag to be displayed
+            ViewBag.ServerScript = "'" + user.Email + "'";
+
+            return View();
+        }
+
+        [HttpPost]
+        [ActionName("Index")]
+        public ActionResult IndexPost()
+        {
+            User user = Session[SessionVars.User] as User;
+
+            //Save user Email in ViewBag to be displayed
+            ViewBag.ServerScript = "'" + user.Email + "'";
+
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
+
+            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"SELECT name, description, radius, 
+            longitude, latitude FROM ads WHERE client={0}", user.InternalId));
+
+            command.Connection = conn;
+
+            try
+            {
+                conn.Open();
+
+                NpgsqlDataReader reader = command.ExecuteReader();
+
+                List<AdInfo> ads = new List<AdInfo>();
+
+                while (reader.Read())
+                {
+                    ads.Add(new AdInfo()
+                    {
+                        Name = reader.GetString(reader.GetOrdinal("name")),
+                        Description = reader.GetString(reader.GetOrdinal("description")),
+                        Lat = reader.GetDouble(reader.GetOrdinal("latitude")),
+                        Lon = reader.GetDouble(reader.GetOrdinal("longitude")),
+                        Radius = reader.GetInt32(reader.GetOrdinal("radius"))
+                    });
+                }
+
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(List<AdInfo>));
+                serializer.WriteObject(Response.OutputStream, ads);
+
+                return new EmptyResult();
+            }
+            catch (NpgsqlException e)
+            {
+                return new WebResult(new ResultInfo() { GreatSuccess = false, Message = e.Message });
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
+
+        #endregion
+
+        #region UPDATE
+
+
+
+        #endregion
+
+        #region DELETE
+
+
+
+        #endregion
     }
 }

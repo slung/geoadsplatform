@@ -11,6 +11,9 @@ namespace GeoAdsPlatform.Models
     public class User
     {
         [DataMember]
+        public int InternalId { get; set; }
+
+        [DataMember]
         public string Email { get; set; }
 
         [DataMember]

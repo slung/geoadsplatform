@@ -26,19 +26,25 @@ namespace GeoAdsPlatform
             routes.MapRoute(
                 "Home",                                              // Route name
                 "home",                                             // URL with parameters
-                new { controller = "Home", action = "Index", id = "" }  // Parameter defaults
+                new { controller = "Home", action = "Index" }  // Parameter defaults
+            );
+
+            routes.MapRoute(
+                "About",                                              // Route name
+                "about",                                             // URL with parameters
+                new { controller = "Home", action = "About" }  // Parameter defaults
             );
 
             routes.MapRoute(
                 "Login", // Route name
                 "login", // URL with parameters
-                new { controller = "Account", action = "Login" } // Parameter defaults
+                new { controller = "Login", action = "Index" } // Parameter defaults
             );
 
             routes.MapRoute(
                 "Register", // Route name
                 "register", // URL with parameters
-                new { controller = "Account", action = "Register" } // Parameter defaults
+                new { controller = "Register", action = "Index" } // Parameter defaults
             );
 
             routes.MapRoute(
@@ -55,8 +61,8 @@ namespace GeoAdsPlatform
 
             routes.MapRoute(
                 "SaveAd", // Route name
-                "ads/save", // URL with parameters
-                new { controller = "Ads", action = "Save" } // Parameter defaults
+                "ads/create", // URL with parameters
+                new { controller = "Ads", action = "Create" } // Parameter defaults
             );
 
             routes.MapRoute(
@@ -79,5 +85,23 @@ namespace GeoAdsPlatform
             ModelBinders.Binders.Add(typeof(AdRequest), new AdRequestModelBinder());
             ModelBinders.Binders.Add(typeof(AdInfo), new AdModelBinder());
         }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            #if DEBUG
+                        HttpContext.Current.Response.AddHeader("Access-Control-Allow-Origin", "*");
+                        HttpContext.Current.Response.AddHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            #endif
+        }
+
+        #region EVENTS
+        protected void Session_Start()
+        { 
+        }
+
+        protected void Session_End()
+        { 
+        }
+        #endregion
     }
 }

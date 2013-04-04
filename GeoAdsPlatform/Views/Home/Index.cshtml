@@ -12,60 +12,61 @@
                 /*
                 * Home View
                 */
-							new GA.HomeView({
-							    container: GA.one("#home"),
-							    templates: {
-							        main: $j.trim(GA.one("#home-tpl").innerHTML)
-							    }
-							}),
+				new GA.HomeView({
+					container: GA.one("#home"),
+					templates: {
+						main: $j.trim(GA.one("#home-tpl").innerHTML)
+					}
+				}),
                 /*
                 * Menu View
                 */
-							new GA.MenuView({
-							    container: GA.one("#menu"),
-							    templates: {
-							        main: $j.trim(GA.one("#menu-tpl").innerHTML)
-							    }
-							}),
+				new GA.MenuView({
+					container: GA.one("#menu"),
+                    client: @Html.Raw( @ViewBag.ServerScript ),
+					templates: {
+						main: $j.trim(GA.one("#menu-tpl").innerHTML)
+					}
+				}),
                 /*
                 * Search View
                 */
-							new GA.SearchView({
-							    container: GA.one("#search"),
-							    hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
-							    templates: {
-							        main: $j.trim(GA.one("#search-tpl").innerHTML)
-							    }
-							}),
+				new GA.SearchView({
+					container: GA.one("#search"),
+					hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
+					templates: {
+						main: $j.trim(GA.one("#search-tpl").innerHTML)
+					}
+				}),
                 /*
                 * Map View
                 */
-							new GA.MapView({
-							    container: GA.one("#map"),
-							    renderContainer: GA.one("#map-container"),
-							    hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
-							    zoom: 3,
-							    markerInfo: {
-							        url: "images/grey-blue-pin-48.png",
-							        position: {
-							            lat: 29.312607001603343,
-							            lng: -40.166015625
-							        }
-							    },
-							    templates: {
-							    }
-							}),
+				new GA.MapView({
+					container: GA.one("#map"),
+					renderContainer: GA.one("#map-container"),
+					hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
+					zoom: 3,
+					markerInfo: {
+						url: "images/grey-blue-pin-48.png",
+						position: {
+							lat: 29.312607001603343,
+							lng: -40.166015625
+						}
+					},
+					templates: {
+					}
+				}),
                 /*
                 * Info View
                 */
-							new GA.InfoView({
-							    container: GA.one("#info"),
-							    hideOnStates: [GA.App.States.HOME, GA.App.States.MAP, GA.App.States.LOGIN, GA.App.States.REGISTER],
-							    templates: {
-							        main: $j.trim(GA.one("#info-tpl").innerHTML)
-							    }
-							})
-						]
+				new GA.InfoView({
+					container: GA.one("#info"),
+					hideOnStates: [GA.App.States.HOME, GA.App.States.MAP, GA.App.States.LOGIN, GA.App.States.REGISTER],
+					templates: {
+						main: $j.trim(GA.one("#info-tpl").innerHTML)
+					}
+				})
+			]
             });
 
             app.start();
@@ -93,19 +94,17 @@
 	<div class="menu-container">
 		{{#client}}
 			<div id="home-item" class="yui3-u logo menu-item">
-				<div class="yui3-u logo">GeoAds</div>
-				<div class="yui3-u client"> welcomes you, {{client}}</div>
+				<div class="logo client-present">GeoAds</div>
+				<div class="client"> welcomes you, {{client}}</div>
 			</div>
-			<div id="login-item" class="yui3-u menu-item">Sign in</div>
-			<div id="register-item" class="yui3-u menu-item">Sign up</div>
-			<div id="publish-item" class="yui3-u menu-item">Publish</div>
+            <div id="new-ad-item" class="yui3-u menu-item">New Ad</div>
+			<div id="my-ads-item" class="yui3-u menu-item">My Ads</div>
 			<div id="about-item" class="yui3-u menu-item">About</div>
 		{{/client}}
 		{{^client}}
 			<div id="home-item" class="yui3-u logo menu-item">GeoAds</div>
 			<div id="login-item" class="yui3-u menu-item">Sign in</div>
 			<div id="register-item" class="yui3-u menu-item">Sign up</div>
-			<div id="publish-item" class="yui3-u menu-item">Publish</div>
 			<div id="about-item" class="yui3-u menu-item">About</div>
 		{{/client}}
 	</div>

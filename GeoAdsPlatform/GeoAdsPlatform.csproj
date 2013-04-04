@@ -77,16 +77,18 @@
     <Compile Include="Binders\AdModelBinder.cs" />
     <Compile Include="Binders\AdRequestModelBinder.cs" />
     <Compile Include="Binders\CredentialsModelBinder.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\AdsController.cs" />
-    <Compile Include="Filters\Authorize.cs" />
+    <Compile Include="Controllers\RegisterController.cs" />
+    <Compile Include="Filters\GeoAdsAuthorize.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AdInfo.cs" />
     <Compile Include="Models\Credentials.cs" />
+    <Compile Include="Models\SessionVars.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Results\OutputFactory.cs" />
     <Compile Include="Results\ResultInfo.cs" />
@@ -133,7 +135,9 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\modernizr-1.7.js" />
     <Content Include="Scripts\modernizr-1.7.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -239,11 +243,12 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\Ads\Create.cshtml" />
+    <Content Include="Views\Register\Index.cshtml" />
     <Content Include="Views\Ads\Index.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
     <None Include="Web\fonts\Flat-UI-Icons-16.eot" />
     <None Include="Web\fonts\Flat-UI-Icons-16.ttf" />
     <None Include="Web\fonts\Flat-UI-Icons-16.woff" />

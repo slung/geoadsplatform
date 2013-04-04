@@ -10,6 +10,7 @@ using System.IO;
 using System.Web.Script.Serialization;
 using System.Runtime.Serialization.Json;
 using GeoAdsPlatform.Results;
+using GeoAdsPlatform.Attributes;
 
 namespace GeoAdsPlatform.Controllers
 {

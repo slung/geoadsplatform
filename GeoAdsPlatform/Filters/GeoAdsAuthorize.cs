@@ -11,11 +11,11 @@ using NpgsqlTypes;
 
 namespace GeoAdsPlatform.Filters
 {
-    public class Authorize : AuthorizeAttribute
+    public class GeoAdsAuthorize : AuthorizeAttribute
     {
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
-            User user = HttpContext.Current.Session["user"] as User;
+            User user = HttpContext.Current.Session[SessionVars.User] as User;
             HttpCookie c = httpContext.Request.Cookies.Get(FormsAuthentication.FormsCookieName);
 
             #region Persistent Login

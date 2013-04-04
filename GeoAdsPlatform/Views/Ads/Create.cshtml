@@ -1,0 +1,123 @@
+﻿@section PAGE_CONFIG
+{
+<script>
+
+	(function ($j) {
+		$j(document).ready(function () {
+
+		    /** App **/
+		    var app = new GA.App({
+		        state: GA.App.States.MAP,
+		        views: [
+		        /*
+		        * Menu View
+		        */
+					new GA.MenuView({
+						container: GA.one("#menu"),
+                        client: @Html.Raw( @ViewBag.ServerScript ),
+						templates: {
+							main: $j.trim(GA.one("#menu-tpl").innerHTML)
+						}
+					}),
+		        /*
+		        * Search View
+		        */
+					new GA.SearchView({
+						container: GA.one("#search"),
+						hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
+						templates: {
+							main: $j.trim(GA.one("#search-tpl").innerHTML)
+						}
+					}),
+		        /*
+		        * Map View
+		        */
+					new GA.MapView({
+						container: GA.one("#map"),
+						renderContainer: GA.one("#map-container"),
+						hideOnStates: [GA.App.States.HOME, GA.App.States.INFO, GA.App.States.LOGIN, GA.App.States.REGISTER],
+						zoom: 3,
+						markerInfo: {
+							url: "/Web/images/grey-blue-pin-48.png",
+							position: {
+							    lat: 29.312607001603343,
+							    lng: -40.166015625
+							}
+						},
+						templates: {
+						}
+					}),
+		        /*
+		        * Info View
+		        */
+					new GA.InfoView({
+						container: GA.one("#info"),
+						hideOnStates: [GA.App.States.HOME, GA.App.States.MAP, GA.App.States.LOGIN, GA.App.States.REGISTER],
+						templates: {
+							main: $j.trim(GA.one("#info-tpl").innerHTML)
+						}
+					})
+				]
+		    });
+
+		    app.start();
+
+		    //GeolocateUser
+		    GA.DataManager.getInstance().geolocateUser();
+		});
+
+	})(jQuery.noConflict());
+			
+</script>
+}
+
+@section PAGE_TEMPLATES
+{
+<!-- Templates -->
+		
+<!-- Menu View -->
+<script id="menu-tpl" type="text/template">
+	<div class="menu-container">
+		{{#client}}
+			<div id="home-item" class="yui3-u logo menu-item">
+				<div class="logo client-present">GeoAds</div>
+				<div class="client"> welcomes you, {{client}}</div>
+			</div>
+            <div id="my-ads-item" class="yui3-u menu-item">My Ads</div>
+            <div id="about-item" class="yui3-u menu-item">About</div>
+		{{/client}}
+	</div>
+</script>
+		
+<!-- Search View -->
+<script id="search-tpl" type="text/template">
+	<div id="search-btn" class="yui3-u" title="Search for my location"></div>
+	<input id="search-input" class="yui3-u" type="text" placeholder="Where are you?"/>
+</script>
+		
+<!-- Info View -->
+<script id="info-tpl" type="text/template">
+	<div id="previous-step" class="yui3-u" title="Previous Step"></div>
+	<div class="left">
+		<h3>Congrats!</h3>
+		<p>You're almost done adding you business ON THE MAP!</p>
+		<p>Please take on more minute and complete your business information. This is the information the users will see when they're in the neighbourhood.</p>
+	</div>
+	<div class="right">
+		<input id="company-name" type="text" maxlength="25" placeholder="Company name (visible to users)"/>
+		<input id="keywords" type="text" maxlength="25" placeholder="Add keywords describing your company (visible to users)"/>
+		<a id="publish" href="#" class="btn btn-large btn-block btn-info">Put me on the map</a>
+	</div>
+</script>
+}
+
+@*Body*@
+<div class="page">
+	<div id="menu"></div>
+	<div id="search"></div>
+	<div id="map">
+		<div id="next-step" class="yui3-u" title="Next Step"></div>
+		<div id="map-container"></div>
+	</div>
+	<div id="info"></div>
+</div>

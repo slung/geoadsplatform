@@ -23,8 +23,8 @@ namespace GeoAdsPlatform.Binders
             a.Name = queryParams["name"];
             a.Description = queryParams["description"];
             a.Radius = Int32.Parse(queryParams["radius"]);
-            a.Lat = float.Parse(queryParams["lat"]);
-            a.Lon = float.Parse(queryParams["lon"]);
+            a.Lat = double.Parse(queryParams["lat"]);
+            a.Lon = double.Parse(queryParams["lon"]);
 
             return a;
         }
