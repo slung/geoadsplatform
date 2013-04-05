@@ -37,6 +37,10 @@
 					templates: {
 						main: $j.trim(GA.one("#ads-tpl").innerHTML),
 						noAds: $j.trim(GA.one("#no-ads-tpl").innerHTML)
+					},
+					onReady: function()
+					{
+						$j(".ads-page #ads").jScrollPane();
 					}
 				}),
                 /*
@@ -92,14 +96,14 @@
 <script id="ads-tpl" type="text/template">
 	<div id="ads-container">
 		{{#ads}}
-			<div id="ad-{{index}}" class="ad">
+			<div id="ad-{{index}}" class="ad id-{{InternalId}}">
 				<div id="ad-info">
 					<div id="name">{{Name}}</div>
 					<div id="description">{{Description}}</div>
 				</div>
 				<div id="buttons">
-					<a id="editBtn-1" class="yui3-u btn btn-primary" href="#">Edit</a>
-					<a id="deleteBtn-1" class="yui3-u btn btn-primary delete" href="#">Delete</a>
+					<a id="editBtn-{{index}}" class="id-{{InternalId}} yui3-u btn btn-primary" href="#">Edit</a>
+					<a id="deleteBtn-{{index}}" class="id-{{InternalId}} yui3-u btn btn-primary delete" href="#">Delete</a>
 				</div>
 			</div>
 		{{/ads}}

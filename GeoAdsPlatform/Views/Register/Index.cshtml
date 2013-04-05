@@ -40,28 +40,28 @@
 	    <img src="/Web/images/register-icon.png" alt="Welcome to GeoAds">
 	    <h4>Welcome to <small>GeoAds</small></h4>
     </div>
-	    <div class="login-form">
-	    <div class="control-group">
-	        <input id="register-email" type="text" class="login-field" value="" placeholder="Enter your email">
-	        <label class="login-field-icon fui-man-16" for="login-name"></label>
-	    </div>
+	    <form class="login-form">
+	        <div class="control-group">
+	            <input autocomplete="on" id="register-email" type="text" class="login-field" value="" placeholder="Enter your email">
+	            <label class="login-field-icon fui-man-16" for="login-name"></label>
+	        </div>
 	
-	    <div class="control-group">
-	        <input id="register-pass" type="password" class="login-field" value="" placeholder="Password">
-	        <label class="login-field-icon fui-lock-16" for="login-pass"></label>
-	    </div>
+	        <div class="control-group">
+	            <input autocomplete="on" id="register-pass" type="password" class="login-field" value="" placeholder="Password">
+	            <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+	        </div>
 	            
-	    <div class="control-group">
-	        <input id="register-pass-confirm" type="password" class="login-field" value="" placeholder="Confirm Password">
-	        <label class="login-field-icon fui-lock-16" for="login-pass"></label>
-	    </div>
+	        <div class="control-group">
+	            <input autocomplete="on" id="register-pass-confirm" type="password" class="login-field" value="" placeholder="Confirm Password">
+	            <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+	        </div>
 				
-		{{#errorMessage}}
-			<div class="error-message">{{errorMessage}}</div>
-		{{/errorMessage}}
+		    {{#errorMessage}}
+			    <div class="error-message">{{errorMessage}}</div>
+		    {{/errorMessage}}
 				
-	    <a id="registerBtn" class="btn btn-primary btn-large btn-block" href="#">Sign up</a>
-	    </div>
+	        <a id="registerBtn" class="btn btn-primary btn-large btn-block" href="#">Sign up</a>
+	    </form>
 </script>
 }
 

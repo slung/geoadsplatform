@@ -127,11 +127,11 @@ namespace GeoAdsPlatform.Controllers
             string encTicket = FormsAuthentication.Encrypt(ticket);
 
             // Create the cookie.
-            //HttpCookie cookie = new HttpCookie("AuthCookie");
-            //cookie.Value = encTicket.ToString();
-            //cookie.Expires = DateTime.Now.AddYears(1);
+            HttpCookie cookie = new HttpCookie("AuthCookie");
+            cookie.Value = encTicket.ToString();
+            cookie.Expires = DateTime.Now.AddYears(1);
 
-            //Response.Cookies.Add(cookie);
+            Response.Cookies.Add(cookie);
         }
         #endregion
 

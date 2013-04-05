@@ -72,6 +72,12 @@ namespace GeoAdsPlatform
             );
 
             routes.MapRoute(
+                "DeleteAd", // Route name
+                "ads/delete", // URL with parameters
+                new { controller = "Ads", action = "Delete" } // Parameter defaults
+            );
+
+            routes.MapRoute(
                 "Default",                                              // Route name
                 "",                                                      // URL with parameters
                 new { controller = "Home", action = "Index", id = "" }  // Parameter defaults

@@ -7,6 +7,7 @@ namespace GeoAdsPlatform.Models
 {
     public class AdInfo
     {
+        public int InternalId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public double Lat { get; set; }

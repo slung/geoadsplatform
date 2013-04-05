@@ -20,8 +20,9 @@ namespace GeoAdsPlatform.Binders
             var queryParams = HttpUtility.ParseQueryString(s);
 
             AdInfo a = new AdInfo();
-            a.Name = queryParams["name"];
-            a.Description = queryParams["description"];
+            a.InternalId = Int32.Parse(queryParams["internalId"]);
+            a.Name = queryParams["name"].Replace("amp;", "&");
+            a.Description = queryParams["description"].Replace("amp;", "&");
             a.Radius = Int32.Parse(queryParams["radius"]);
             a.Lat = double.Parse(queryParams["lat"]);
             a.Lon = double.Parse(queryParams["lon"]);

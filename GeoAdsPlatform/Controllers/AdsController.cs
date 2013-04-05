@@ -100,8 +100,7 @@ namespace GeoAdsPlatform.Controllers
             string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
             NpgsqlConnection conn = new NpgsqlConnection(connectionString);
 
-            NpgsqlCommand command = new NpgsqlCommand(string.Format(@"SELECT name, description, radius, 
-            longitude, latitude FROM ads WHERE client={0}", user.InternalId));
+            NpgsqlCommand command = new NpgsqlCommand(string.Format("SELECT \"internalId\", name, description, radius, longitude, latitude FROM ads WHERE client={0}", user.InternalId));
 
             command.Connection = conn;
 
@@ -117,6 +116,7 @@ namespace GeoAdsPlatform.Controllers
                 {
                     ads.Add(new AdInfo()
                     {
+                        InternalId = reader.GetInt32(reader.GetOrdinal("internalId")),
                         Name = reader.GetString(reader.GetOrdinal("name")),
                         Description = reader.GetString(reader.GetOrdinal("description")),
                         Lat = reader.GetDouble(reader.GetOrdinal("latitude")),
@@ -150,7 +150,32 @@ namespace GeoAdsPlatform.Controllers
 
         #region DELETE
 
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            NpgsqlConnection conn = new NpgsqlConnection(connectionString);
 
+            NpgsqlCommand command = new NpgsqlCommand(string.Format("DELETE FROM ads WHERE \"internalId\"={0}", id));
+            command.Connection = conn;
+
+            try
+            {
+                conn.Open();
+
+                int result = Convert.ToInt32(command.ExecuteScalar());
+
+                return new EmptyResult();
+            }
+            catch (NpgsqlException e)
+            {
+                return new EmptyResult();
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
 
         #endregion
     }
